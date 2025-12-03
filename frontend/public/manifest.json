@@ -1,28 +1,88 @@
 {
   "manifest_version": 3,
-  "name": "React Browser Extension",
-  "version": "1.0.0",
-  "description": "A browser extension built with React and TypeScript",
+  "name": "SecureLink Guard - AI-Powered Web Protection",
+  "version": "2.1.4",
+  "description": "Advanced cybersecurity extension with machine learning-powered link analysis and real-time threat detection",
+  
   "permissions": [
     "activeTab",
-    "storage"
+    "tabs",
+    "storage",
+    "scripting",
+    "webNavigation",
+    "webRequest",
+    "contextMenus",
+    "notifications",
+    "alarms"
   ],
+  
+  "host_permissions": [
+    "http://*/*",
+    "https://*/*"
+  ],
+  
   "background": {
-    "service_worker": "background.js"
+    "service_worker": "background.js",
+    "type": "module"
   },
+  
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["content.js"]
+      "js": ["content.js"],
+      "run_at": "document_start"
     }
   ],
+  
   "action": {
-    "default_popup": "index.html",
-    "default_title": "React Extension"
+    "default_popup": "popup.html",
+    "default_title": "SecureLink Guard",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
   },
+  
   "icons": {
-    "16": "vite.svg",
-    "48": "vite.svg",
-    "128": "vite.svg"
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png", 
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "styles/*.css",
+        "js/*.js",
+        "icons/*.png"
+      ],
+      "matches": ["<all_urls>"]
+    }
+  ],
+  
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'; style-src 'self' 'unsafe-inline';"
+  },
+  
+  "options_page": "options.html",
+  
+  "commands": {
+    "analyze_current_page": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+A",
+        "mac": "Command+Shift+A"
+      },
+      "description": "Analyze current page with ML algorithms"
+    },
+    "quick_scan": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+S",
+        "mac": "Command+Shift+S"
+      },
+      "description": "Quick security scan"
+    }
   }
 }
