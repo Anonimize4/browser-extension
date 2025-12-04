@@ -1,40 +1,26 @@
 import React, { useState, useEffect } from 'react';
-
-interface ThreatData {
-  id: string;
-  type: string;
-  severity: 'low' | 'medium' | 'high' | 'critical';
-  description: string;
-  timestamp: string;
-}
+import { ThreatService } from '../services/ThreatService';
+import type { ThreatData } from '../services/ThreatService';
 
 const ThreatDashboard: React.FC = () => {
   const [threats, setThreats] = useState<ThreatData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Mock data - in real app, fetch from backend API
-    const mockThreats: ThreatData[] = [
-      {
-        id: '1',
-        type: 'Phishing',
-        severity: 'high',
-        description: 'Suspicious link detected in email',
-        timestamp: new Date().toISOString()
-      },
-      {
-        id: '2',
-        type: 'Malware',
-        severity: 'critical',
-        description: 'Malicious script blocked',
-        timestamp: new Date().toISOString()
+    const fetchThreats = async () => {
+      try {
+        const threatData = await ThreatService.getThreats();
+        setThreats(threatData);
+      } catch (error) {
+        console.error('Failed to fetch threats:', error);
+        // Fallback to empty array
+        setThreats([]);
+      } finally {
+        setIsLoading(false);
       }
-    ];
+    };
 
-    setTimeout(() => {
-      setThreats(mockThreats);
-      setIsLoading(false);
-    }, 1000);
+    fetchThreats();
   }, []);
 
   const getSeverityColor = (severity: string) => {

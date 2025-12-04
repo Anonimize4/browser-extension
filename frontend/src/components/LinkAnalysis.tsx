@@ -1,36 +1,34 @@
 import React, { useState } from 'react';
-
-interface LinkResult {
-  url: string;
-  isSafe: boolean;
-  riskScore: number;
-  threats: string[];
-  recommendations: string[];
-}
+import { MLAnalysisService } from '../services/MLAnalysisService';
+import type { LinkAnalysisResult } from '../services/MLAnalysisService';
 
 const LinkAnalysis: React.FC = () => {
   const [url, setUrl] = useState('');
   const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const [result, setResult] = useState<LinkResult | null>(null);
+  const [result, setResult] = useState<LinkAnalysisResult | null>(null);
 
   const analyzeLink = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!url.trim()) return;
 
     setIsAnalyzing(true);
-    
-    // Mock analysis - in real app, call backend API
-    setTimeout(() => {
-      const mockResult: LinkResult = {
+
+    try {
+      const analysisResult = await MLAnalysisService.analyzeLink(url);
+      setResult(analysisResult);
+    } catch (error) {
+      console.error('Analysis failed:', error);
+      // Fallback result
+      setResult({
         url,
-        isSafe: Math.random() > 0.3,
-        riskScore: Math.floor(Math.random() * 100),
-        threats: ['Suspicious domain', 'Known phishing pattern'],
-        recommendations: ['Avoid clicking this link', 'Report as spam']
-      };
-      setResult(mockResult);
+        isSafe: false,
+        riskScore: 100,
+        threats: ['Analysis failed'],
+        recommendations: ['Try again later']
+      });
+    } finally {
       setIsAnalyzing(false);
-    }, 2000);
+    }
   };
 
   const getRiskLevel = (score: number) => {
