@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import LoginPage from './components/LoginPage';
+// import LoginPage from './components/LoginPage';
 import SecurityDashboard from './components/ThreatDashboard';
 import LinkAnalysis from './components/LinkAnalysis';
 import ExtensionHeader from './components/ExtensionHeader';
@@ -12,7 +12,8 @@ function App() {
         <ExtensionHeader />
         <main className="main-content">
           <Routes>
-            <Route path="/" element={<LoginPage />} />
+            {/* <Route path="/" element={<LoginPage />} /> */}
+            <Route path="/" element={<SecurityDashboard />} />
             <Route path="/dashboard" element={<SecurityDashboard />} />
             <Route path="/analysis" element={<LinkAnalysis />} />
           </Routes>
